@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ReelWrapped</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="about-page">
+        <header class="landing-header">
+            <a href="/" class="logo">ReelWrapped</a>
+            <nav class="nav-links">
+                <a href="{{ url_for('main.about') }}">About</a>
+                <a href="{{ url_for('main.support') }}">Support</a>
+            </nav>
+        </header>
+
+        <main class="about-content">
+            <h1 class="about-title">About ReelWrapped</h1>
+
+            <section class="about-section">
+                <h2>What is ReelWrapped?</h2>
+                <p>
+                    ReelWrapped is a powerful analytics platform designed to help Instagram users gain deep insights into their content preferences and discover trending trends in their niche. By analyzing your Instagram activity logs, we provide personalized recommendations for hashtags, music, and creators that align with your interests.
+                </p>
+            </section>
+
+            <section class="about-section">
+                <h2>Why Use ReelWrapped?</h2>
+                <ul>
+                    <li><strong>Personalized Analytics:</strong> Understand your Instagram behavior patterns and content preferences</li>
+                    <li><strong>Trend Discovery:</strong> Stay ahead of the curve with trending hashtags and music in your niche</li>
+                    <li><strong>Creator Insights:</strong> Connect with creators who share similar interests</li>
+                    <li><strong>Data Privacy:</strong> Your activity logs are processed securely and never stored permanently</li>
+                    <li><strong>Free to Use:</strong> Access comprehensive analytics without any cost</li>
+                </ul>
+            </section>
+
+            <section class="about-section">
+                <h2>How to Use ReelWrapped</h2>
+                <ol>
+                    <li><strong>Download Your Data:</strong> Request and download your Instagram activity logs from Instagram's settings</li>
+                    <li><strong>Create Account:</strong> Sign up for a free ReelWrapped account</li>
+                    <li><strong>Upload Logs:</strong> Upload your activity logs (ZIP file) to our secure platform</li>
+                    <li><strong>Explore Insights:</strong> View your personalized analytics and trending recommendations</li>
+                    <li><strong>Discover Trends:</strong> Browse trending hashtags, music, and creators in your niche</li>
+                </ol>
+            </section>
+
+            <section class="about-section">
+                <h2>Privacy & Security</h2>
+                <p>
+                    At ReelWrapped, we take your privacy seriously. Your Instagram activity logs are processed temporarily to generate insights and are not stored on our servers. We only use the data necessary to provide our analytics services and comply with Instagram's data export format.
+                </p>
+            </section>
+
+            <div class="cta-section">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
+                <a href="{{ url_for('main.support') }}" class="btn btn-secondary">Need Help?</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

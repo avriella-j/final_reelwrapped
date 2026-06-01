@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - ReelWrapped Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-users {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #E1306C 0%, #F77737 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .admin-nav a {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .admin-nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .table-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .user-email {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .user-bio {
+            color: #666;
+            font-size: 0.9rem;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .user-hashtags {
+            color: #E1306C;
+            font-size: 0.9rem;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .user-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #E1306C;
+            border: 2px solid #E1306C;
+        }
+        
+        .btn-primary:hover {
+            background: #E1306C;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #E1306C;
+            color: white;
+            border: 2px solid #E1306C;
+        }
+        
+        .btn-danger:hover {
+            background: #b32756;
+            border-color: #b32756;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .search-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #E1306C;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-users" style="background: linear-gradient(135deg, #E1306C, #F77737, #FCAF45); min-height: 100vh;">
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">Manage Users</h1>
+            </div>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin.manage_trends') }}">Trends</a>
+                <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search users by username, email, or hashtags..." id="searchInput">
+        </div>
+
+        <div class="users-table">
+            <div class="table-header">
+                <h2 class="table-title">All Users</h2>
+            </div>
+            
+            {% if users %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Bio</th>
+                        <th>Hashtags</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <div class="user-name">{{ user.username }}</div>
+                            <div class="user-email">{{ user.email }}</div>
+                        </td>
+                        <td class="user-bio" title="{{ user.bio or 'No bio' }}">{{ user.bio or 'No bio' }}</td>
+                        <td class="user-hashtags" title="{{ user.profile_hashtags or 'No hashtags' }}">{{ user.profile_hashtags or 'No hashtags' }}</td>
+                        <td class="user-date">{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'Unknown' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('admin.edit_user', user_id=user['id']) }}" class="btn btn-primary btn-sm">Edit</a>
+                                <form action="{{ url_for('admin.delete_user', user_id=user['id']) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No users found</h3>
+                <p>There are no users in the system.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

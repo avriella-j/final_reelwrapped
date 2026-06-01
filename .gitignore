@@ -1,0 +1,3 @@
+# Generated Bandit scan output (regenerate with bandit; do not commit)
+bandit-report.html
+bandit-report.json

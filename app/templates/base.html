@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ReelWrapped{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="{% if request.endpoint in ['auth.login', 'auth.register'] %}{{ url_for('main.landing') }}{% else %}{{ url_for('main.home') }}{% endif %}" class="logo">ReelWrapped</a>
+            </div>
+            <div class="nav-links">
+                {% if session.user_id %}
+                    <a href="{{ url_for('main.home') }}" class="{% if request.endpoint == 'main.home' %}active{% endif %}">Explore</a>
+                    <a href="{{ url_for('main.foryou') }}" class="{% if request.endpoint == 'main.foryou' %}active{% endif %}">For You</a>
+                    <a href="{{ url_for('mutuals.mutuals') }}" class="{% if request.endpoint == 'mutuals.mutuals' %}active{% endif %}">Find Mutuals</a>
+                    <a href="{{ url_for('main.profile') }}" class="{% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
+                    <a href="#" onclick="confirmLogout(event)">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}">Login</a>
+                    <a href="{{ url_for('auth.register') }}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 ReelWrapped. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogoutModal()">&times;</span>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to log out of your account?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="proceedLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

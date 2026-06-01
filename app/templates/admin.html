@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - ReelWrapped{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Account Settings</h1>
+
+    <div class="settings-section">
+        <h2>Edit Profile</h2>
+        <form method="POST" action="{{ url_for('admin.edit_profile') }}" class="settings-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" rows="3" maxlength="500" placeholder="Tell us about yourself...">{{ user.bio or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="profile_image_url">Profile Image URL</label>
+                <input type="url" id="profile_image_url" name="profile_image_url" value="{{ user.profile_image_url }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+
+    <div class="settings-section">
+        <h2>Change Password</h2>
+        <form method="POST" action="{{ url_for('admin.change_password') }}" class="settings-form">
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" id="current_password" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+    </div>
+
+    <div class="settings-section danger">
+        <h2>Delete Account</h2>
+        <p class="warning">This action cannot be undone. All your data will be permanently deleted.</p>
+        <form method="POST" action="{{ url_for('admin.delete_account') }}" class="settings-form" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.')">
+            <div class="form-group">
+                <label for="password">Confirm Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete Account</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

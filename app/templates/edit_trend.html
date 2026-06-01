@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Trend - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Edit Trend</h1>
+            <a href="{{ url_for('admin.manage_trends') }}" class="btn btn-secondary">Back to Trends</a>
+        </div>
+
+        <div class="management-section">
+            <form method="POST" class="edit-form">
+                <div class="form-group">
+                    <label for="name">Trend Name</label>
+                    <input type="text" id="name" name="name" value="{{ trend.name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="trend_type">Trend Type</label>
+                    <select id="trend_type" name="trend_type" required>
+                        <option value="hashtag" {% if trend.trend_type == 'hashtag' %}selected{% endif %}>Hashtag</option>
+                        <option value="music" {% if trend.trend_type == 'music' %}selected{% endif %}>Music</option>
+                        <option value="creator" {% if trend.trend_type == 'creator' %}selected{% endif %}>Creator</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="count">Count</label>
+                    <input type="number" id="count" name="count" value="{{ trend.count }}" required min="0">
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{{ url_for('admin.manage_trends') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

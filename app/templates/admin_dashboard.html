@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ReelWrapped</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">Admin Dashboard</h1>
+                <p class="admin-subtitle">Manage ReelWrapped content and users</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin.manage_trends') }}">Trends</a>
+                <a href="{{ url_for('admin.manage_users') }}">Users</a>
+                <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+            </nav>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_users }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_trends }}</div>
+                <div class="stat-label">Total Trends</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ hashtag_trends }}</div>
+                <div class="stat-label">Hashtag Trends</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ music_trends }}</div>
+                <div class="stat-label">Music Trends</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ creator_trends }}</div>
+                <div class="stat-label">Creator Trends</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Recent Users Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Users</h2>
+                </div>
+                <div class="section-content">
+                    <div class="mutuals-grid">
+                        {% for user in recent_users %}
+                        <div class="user-card">
+                            <div class="user-card-header">
+                                <div class="user-avatar">
+                                    <img src="{{ user.profile_image_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2NjYyIvPjwvc3ZnPg==' }}" alt="Profile">
+                                </div>
+                                <div class="user-header-info">
+                                    <h3>{{ user.username }}</h3>
+                                    <p style="font-size: 0.9rem; color: #666; margin: 0;">{{ user.email }}</p>
+                                </div>
+                            </div>
+                            <div class="user-card-body">
+                                {% if user.bio %}
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">{{ user.bio[:100] }}{% if user.bio|length > 100 %}...{% endif %}</p>
+                                {% endif %}
+                                {% if user.profile_hashtags %}
+                                <div class="user-interests">
+                                    {% for hashtag in user.profile_hashtags.split(',')[:3] %}
+                                    <span class="interest-tag">{{ hashtag.strip() }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('admin.edit_user', user_id=user['id']) }}" class="btn btn-primary" style="width: 100%; text-align: center;">Edit User</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Trends Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Trends</h2>
+                </div>
+                <div class="section-content">
+                    <div class="cards-container">
+                        {% for trend in top_trends %}
+                        <div class="trend-card" style="position: relative;">
+                            <div class="card-icon">
+                                {% if trend.trend_type == 'hashtag' %}
+                                #
+                                {% elif trend.trend_type == 'music' %}
+                                ♪
+                                {% elif trend.trend_type == 'creator' %}
+                                ★
+                                {% endif %}
+                            </div>
+                            <h3>{{ trend.name }}</h3>
+                            <p>{{ trend.count }} interactions</p>
+                            <span class="trend-type {{ trend.trend_type }}">{{ trend.trend_type }}</span>
+                            <a href="{{ url_for('admin.edit_trend', trend_id=trend['id']) }}" class="btn btn-primary" style="width: 100%; margin-top: 1rem; text-align: center;">Edit Trend</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

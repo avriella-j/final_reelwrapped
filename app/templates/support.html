@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - ReelWrapped</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <div class="support-page">
+        <header class="landing-header">
+            <a href="/" class="logo">ReelWrapped</a>
+            <nav class="nav-links">
+                <a href="{{ url_for('main.about') }}">About</a>
+                <a href="{{ url_for('main.support') }}">Support</a>
+            </nav>
+        </header>
+
+        <main class="support-content">
+            <h1 class="support-title">Support Center</h1>
+
+            <section class="support-section">
+                <h2>Troubleshooting</h2>
+
+                <div class="faq-item">
+                    <h3>How do I download my Instagram activity logs?</h3>
+                    <p>
+                        1. Open Instagram on your mobile device<br>
+                        2. Go to your profile and tap the menu (three lines)<br>
+                        3. Tap "Your activity" or "Account"<br>
+                        4. Tap "Download your data" or "Download information"<br>
+                        5. Select "Some of your information" and choose activity data<br>
+                        6. Instagram will email you a download link (this may take up to 48 hours)
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>My upload is failing. What should I do?</h3>
+                    <p>
+                        - Ensure you're uploading a valid ZIP file from Instagram<br>
+                        - Check that the file size is under 100MB<br>
+                        - Try refreshing the page and uploading again<br>
+                        - Clear your browser cache and cookies<br>
+                        - Try using a different browser or device
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>I'm not seeing any analytics after uploading. Why?</h3>
+                    <p>
+                        - Make sure your activity logs contain sufficient data (likes, comments, follows)<br>
+                        - The processing may take a few minutes for large files<br>
+                        - Try refreshing the page<br>
+                        - Contact support if the issue persists
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>How do I update my profile information?</h3>
+                    <p>
+                        Go to your Profile page, click "Edit Profile", and update your bio, hashtags, or profile picture. Changes are saved automatically.
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Can I delete my account and data?</h3>
+                    <p>
+                        Yes, you can request account deletion from your Profile page. All your data will be permanently removed from our servers.
+                    </p>
+                </div>
+            </section>
+
+            <section class="support-section">
+                <h2>Contact Support</h2>
+                <p>
+                    If you're still having issues or have questions not covered above, please contact our support team:
+                </p>
+                <div class="contact-info">
+                    <p><strong>Email:</strong> <a href="mailto:ajimenez2@students.rj.nsw.edu.au">ajimenez2@students.rj.nsw.edu.au</a></p>
+                    <p><strong>Response Time:</strong> We aim to respond within 24-48 hours</p>
+                </div>
+                <p>
+                    Please include as much detail as possible about your issue, including:
+                </p>
+                <ul>
+                    <li>Your username (if applicable)</li>
+                    <li>What you were trying to do</li>
+                    <li>Any error messages you received</li>
+                    <li>Your browser and device information</li>
+                </ul>
+            </section>
+
+            <div class="cta-section">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login to Account</a>
+                <a href="{{ url_for('main.about') }}" class="btn btn-secondary">Learn More</a>
+                <button id="adminSignInBtn" class="btn btn-primary"><strong>Sign in as Admin</strong></button>
+            </div>
+
+            <!-- Admin Sign-in Modal -->
+            <div id="adminModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2 style="color: #E1306C;">Admin Authentication</h2>
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminPin">Enter Admin PIN:</label>
+                            <input type="password" id="adminPin" name="adminPin" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                    <div id="adminError" class="error-message" style="display: none; color: red; margin-top: 10px;"></div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            const modal = document.getElementById('adminModal');
+            const btn = document.getElementById('adminSignInBtn');
+            const span = document.getElementsByClassName('close')[0];
+            const form = document.getElementById('adminLoginForm');
+            const errorDiv = document.getElementById('adminError');
+
+            btn.onclick = function() {
+                modal.style.display = 'block';
+            }
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+                errorDiv.style.display = 'none';
+                form.reset();
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    errorDiv.style.display = 'none';
+                    form.reset();
+                }
+            }
+
+            form.onsubmit = async function(e) {
+                e.preventDefault();
+                const pin = document.getElementById('adminPin').value;
+                const errorDiv = document.getElementById('adminError');
+                errorDiv.style.display = 'none';
+                
+                try {
+                    const response = await fetch('/admin/auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({pin: pin})
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        throw new Error(data.message || 'Invalid PIN');
+                    }
+                } catch (error) {
+                    console.error('Authentication error:', error);
+                    errorDiv.textContent = error.message || 'Authentication failed. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }} - ReelWrapped{% endblock %}
+
+{% block content %}
+<div class="container" data-current-user-id="{{ user['id'] }}">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <img src="{{ user.profile_image_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=' }}" alt="Profile Picture" class="profile-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=';">
+        </div>
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <p>{{ user.email }}</p>
+            <div class="profile-stats">
+                <button class="stat-btn" onclick="showFollowersModal()"><strong>{{ followers }}</strong> Followers</button>
+                <button class="stat-btn" onclick="showFollowingModal()"><strong>{{ following }}</strong> Following</button>
+            </div>
+            {% if user.profile_hashtags %}
+            <div class="profile-hashtags">
+                {% for hashtag in user.profile_hashtags.split(',') %}
+                <span class="hashtag-tag">{{ hashtag.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if user.bio %}
+            <p class="profile-bio">{{ user.bio }}</p>
+            {% endif %}
+            <div class="profile-actions">
+                {% if is_following %}
+                <button class="btn btn-secondary unfollow-btn" data-user-id="{{ user['id'] }}" data-following="true">Unfollow</button>
+                {% else %}
+                <button class="btn btn-primary follow-btn" data-user-id="{{ user['id'] }}" data-following="false">Follow</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if interests %}
+    <div class="interests-grid">
+        <div class="interest-card">
+            <h3>Top Hashtags</h3>
+            <div class="interest-list">
+                {% for hashtag in interests.hashtags %}
+                <span class="interest-tag">#{{ hashtag.lstrip('#') }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="interest-card">
+            <h3>Favorite Music</h3>
+            <div class="interest-list">
+                {% for music in interests.music_liked %}
+                <span class="interest-tag">{{ music }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="interest-card">
+            <h3>Followed Creators</h3>
+            <div class="interest-list">
+                {% for celeb in interests.celebrities_followed %}
+                <span class="interest-tag">{{ celeb }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="interest-card">
+            <h3>Activity Stats</h3>
+            <ul class="stats-list">
+                <li>{{ interests.posts_liked_count }} Posts Liked</li>
+                <li>{{ interests.reels_watched_count }} Reels Watched</li>
+                <li>{{ interests.comments_made_count }} Comments Made</li>
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-data">
+        <p>This user hasn't uploaded their activity logs yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Followers Modal -->
+<div id="followers-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeFollowersModal()">&times;</span>
+        <h2>Followers</h2>
+        <div id="followers-list" class="user-list">
+            <!-- Followers will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Following Modal -->
+<div id="following-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeFollowingModal()">&times;</span>
+        <h2>Following</h2>
+        <div id="following-list" class="user-list">
+            <!-- Following will be loaded here -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Find Mutuals - ReelWrapped{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Find People with Similar Interests</h1>
+
+    <div class="search-section">
+        <input type="text" id="search-input" placeholder="Search users..." class="search-input">
+        <select id="sort-select" class="sort-select">
+            <option value="match" {% if sort_by == 'match' %}selected{% endif %}>Best Match</option>
+            <option value="followers" {% if sort_by == 'followers' %}selected{% endif %}>Most Followers</option>
+            <option value="alphabetical" {% if sort_by == 'alphabetical' %}selected{% endif %}>Alphabetical</option>
+        </select>
+    </div>
+
+    <div class="mutuals-grid" id="mutuals-container">
+        {% for match in user_matches %}
+        <div class="user-card" data-user-id="{{ match.user['id'] }}">
+            <div class="user-card-header">
+                <div class="user-avatar">
+                    <img src="{{ match.user.profile_image_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0id2hpdGUiLz48L3N2Zz4=' }}" alt="Profile">
+                </div>
+                <div class="user-header-info">
+                    <h3 class="user-link" data-user-id="{{ match.user['id'] }}">{{ match.user.username }}</h3>
+                    <div class="user-stats">
+                        <span class="stat">{{ match.user.followers }} followers</span>
+                        <span class="stat">{{ match.user.following }} following</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-card-body">
+                <div class="match-percentage">
+                    <span class="match-score">{{ match.match_percent }}% Match</span>
+                </div>
+                <div class="user-interests">
+                    {% if match.user.hashtags %}
+                        {% for hashtag in match.user.hashtags[:3] %}
+                        <span class="interest-tag">#{{ hashtag.lstrip('#') }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <button class="btn {{ 'btn-secondary' if match.is_following else 'btn-primary' }} follow-btn"
+                    data-user-id="{{ match.user['id'] }}"
+                    data-following="{{ match.is_following|lower }}">
+                {{ 'Unfollow' if match.is_following else 'Follow' }}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

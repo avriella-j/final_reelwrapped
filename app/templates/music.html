@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ song_name }} - ReelWrapped{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <div class="music-icon">
+                <span class="music-symbol">♪</span>
+            </div>
+        </div>
+        <div class="profile-info">
+            <h1>{{ song_name }}</h1>
+            <div class="profile-stats">
+                <span class="stat-rank">#{{ rank }} Trending</span>
+                <button class="stat-btn" onclick="showTrendUsersModal('music', '{{ song_name }}')"><strong>{{ profile_users_count }}</strong> users in profiles</button>
+                <button class="stat-btn" onclick="showTrendFollowersModal('music', '{{ song_name }}')"><strong>{{ followers_count }}</strong> followers</button>
+            </div>
+            <button class="btn btn-primary follow-btn" id="follow-btn" data-song-name="{{ song_name }}" data-following="{{ is_following|lower }}">
+                {% if is_following %}Unfollow{% else %}Follow{% endif %}
+            </button>
+            <p class="music-bio">Discover content related to {{ song_name }}. Join the conversation and explore trending posts and reels.</p>
+        </div>
+    </div>
+
+    <div class="profile-tabs">
+        <button class="tab-btn active" onclick="showTab('posts')">Posts</button>
+        <button class="tab-btn" onclick="showTab('reels')">Reels</button>
+    </div>
+
+    <div id="posts-tab" class="tab-content active">
+        {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="{{ post.user_profile_image or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIyMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg==' }}" alt="User" class="post-avatar">
+                    <div class="post-user-info">
+                        <h4>{{ post.username }}</h4>
+                        <span class="post-date">{{ post.timestamp }}</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>{{ post.content }}</p>
+                </div>
+                <div class="post-stats">
+                    <span>{{ post.likes }} likes</span>
+                    <span>{{ post.comments }} comments</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-content">
+            <p style="color: white;">No posts available for this song.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="reels-tab" class="tab-content">
+        {% if reels %}
+        <div class="reels-grid">
+            {% for reel in reels %}
+            <div class="reel-card">
+                <div class="reel-header">
+                    <img src="{{ reel.user_profile_image or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIyMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg==' }}" alt="User" class="reel-avatar">
+                    <div class="reel-user-info">
+                        <h4>{{ reel.username }}</h4>
+                        <span class="reel-date">{{ reel.timestamp }}</span>
+                    </div>
+                </div>
+                <div class="reel-content">
+                    <video controls class="reel-video">
+                        <source src="{{ reel.video_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="reel-stats">
+                    <span>{{ reel.likes }} likes</span>
+                    <span>{{ reel.comments }} comments</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-content">
+            <p style="color: white;">No reels available for this song.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Trend Users Modal -->
+<div id="trend-users-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTrendUsersModal()">&times;</span>
+        <h2>Users with this trend in their profiles</h2>
+        <div id="trend-users-list" class="user-list">
+            <!-- Users will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Trend Followers Modal -->
+<div id="trend-followers-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTrendFollowersModal()">&times;</span>
+        <h2>Users following this trend</h2>
+        <div id="trend-followers-list" class="user-list">
+            <!-- Followers will be loaded here -->
+        </div>
+    </div>
+</div>
+{% endblock %}

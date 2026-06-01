@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - ReelWrapped{% endblock %}
+
+{% block content %}
+<div class="container" data-current-user-id="{{ user['id'] }}">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <img src="{{ user.profile_image_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=' }}" alt="Profile Picture" class="profile-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=';">
+        </div>
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <p>{{ user.email }}</p>
+            <div class="profile-stats">
+                <button class="stat-btn" onclick="showFollowersModal()"><strong>{{ followers }}</strong> Followers</button>
+                <button class="stat-btn" onclick="showFollowingModal()"><strong>{{ following }}</strong> Following</button>
+            </div>
+            <button class="btn btn-secondary" onclick="showEditModal()">Edit Profile</button>
+            {% if user.profile_hashtags %}
+            <div class="profile-hashtags">
+                {% for hashtag in user.profile_hashtags.split(',') %}
+                <span class="hashtag-tag">{{ hashtag.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if user.bio %}
+            <p class="profile-bio">{{ user.bio }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not interests %}
+    <div class="upload-modal" id="upload-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeUploadModal()">&times;</span>
+            <h2>You have no data!</h2>
+            <p>Upload your activity logs from Instagram here to see your personalized ReelWrapped summary.</p>
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="activity_log" accept=".zip" required>
+                <button type="submit" class="btn btn-primary">Upload Activity Logs</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="profile-tabs">
+        <button class="tab-btn active" onclick="showTab('interests')">Interests</button>
+        <button class="tab-btn" onclick="showTab('reposts')">Reposts</button>
+    </div>
+
+    <div id="interests-tab" class="tab-content active">
+        {% if interests %}
+        <div class="interests-grid">
+            <div class="interest-card">
+                <h3>Top Hashtags</h3>
+                <div class="interest-list">
+                    {% for hashtag in interests.hashtags | load_json %}
+                    <span class="interest-tag">#{{ hashtag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="interest-card">
+                <h3>Favorite Music</h3>
+                <div class="interest-list">
+                    {% for music in interests.music_liked | load_json %}
+                    <span class="interest-tag">{{ music }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="interest-card">
+                <h3>Followed Creators</h3>
+                <div class="interest-list">
+                    {% for celeb in interests.celebrities_followed | load_json %}
+                    <span class="interest-tag">@{{ celeb }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="interest-card">
+                <h3>Activity Stats</h3>
+                <ul class="stats-list">
+                    <li>{{ interests.posts_liked_count }} Posts Liked</li>
+                    <li>{{ interests.reels_watched_count }} Reels Watched</li>
+                    <li>{{ interests.comments_made_count }} Comments Made</li>
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <p>No activity data available. Upload your Instagram activity logs to see your interests!</p>
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="activity_log" accept=".zip" required>
+                <button type="submit" class="btn btn-primary">Upload Activity Logs</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="reposts-tab" class="tab-content">
+        <div id="reposts-container" class="reposts-grid">
+            <!-- Reposts will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Followers Modal -->
+<div id="followers-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeFollowersModal()">&times;</span>
+        <h2>Followers</h2>
+        <div id="followers-list" class="user-list">
+            <!-- Followers will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Following Modal -->
+<div id="following-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeFollowingModal()">&times;</span>
+        <h2>Following</h2>
+        <div id="following-list" class="user-list">
+            <!-- Following will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Profile</h2>
+        <form id="edit-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="edit-username">Username</label>
+                <input type="text" id="edit-username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-email">Email</label>
+                <input type="email" id="edit-email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-hashtags">Hashtags</label>
+                <div class="hashtag-buttons">
+                    <button type="button" class="hashtag-btn" data-hashtag="#travel">#travel</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#foodie">#foodie</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#fitness">#fitness</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#music">#music</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#art">#art</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#tech">#tech</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#photography">#photography</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#gaming">#gaming</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#fashion">#fashion</button>
+                    <button type="button" class="hashtag-btn" data-hashtag="#nature">#nature</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="edit-bio">Bio</label>
+                <textarea id="edit-bio" rows="3" maxlength="500" placeholder="Tell us about yourself...">{{ user.bio or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-profile-image">Profile Image</label>
+                <input type="file" id="edit-profile-image" name="profile_image" accept=".jpg,.jpeg,.png,.gif,.webp">
+                <small>Upload JPG, PNG, GIF, or WebP image. Leave empty to keep current image.</small>
+            </div>
+            <button type="button" onclick="submitEditForm()" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReelWrapped - Discover Your Instagram Insights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="landing-page">
+        <header class="landing-header">
+            <a href="/" class="logo">ReelWrapped</a>
+            <nav class="nav-links">
+                <a href="{{ url_for('main.about') }}">About</a>
+                <a href="{{ url_for('main.support') }}">Support</a>
+            </nav>
+        </header>
+
+        <main class="landing-content">
+            <h1 class="hero-title">Discover Your Instagram Insights</h1>
+            <p class="hero-subtitle">
+                Upload your Instagram activity logs and unlock personalized analytics about your content preferences,
+                trending hashtags, music, and creators that match your interests.
+            </p>
+
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Create Account</a>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Personal Analytics</h3>
+                    <p class="feature-description">
+                        Get detailed insights into your Instagram activity, including your most liked content types and engagement patterns.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3 class="feature-title">Music Discovery</h3>
+                    <p class="feature-description">
+                        Discover trending music and soundtracks that align with your content preferences and audience.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-title">Hashtag Trends</h3>
+                    <p class="feature-description">
+                        Find trending hashtags in your niche and see which ones are gaining popularity among similar creators.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Creator Insights</h3>
+                    <p class="feature-description">
+                        Connect with creators who share similar interests and discover new content creators to follow.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
